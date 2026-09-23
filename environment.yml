@@ -1,0 +1,32 @@
+name: ngs-benchmarking
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  # Alignment and BAM handling
+  - bwa=0.7.18
+  - samtools=1.21
+  - bcftools=1.21
+  - htslib=1.21
+
+  # Pre-processing and variant calling
+  - picard=3.3.0
+  - gatk4=4.6.1.0
+  - openjdk=17
+
+  # AnalyzeCovariates plots (step 04)
+  - r-base=4.3
+  - r-ggplot2
+  - r-gsalib
+  - r-reshape
+
+  # Figure regeneration (analysis/plot_benchmarks.py)
+  - python=3.11
+  - pandas=2.2
+  - numpy=1.26
+  - matplotlib-base=3.9
+
+# Not installable from conda — install separately:
+#   * Docker, for the hap.py benchmarking container (steps 06 and 07).
+#     hap.py is pinned to jmcdani20/hap.py:v0.3.12 in config.sh. On Apple
+#     silicon the image runs under emulation; HAPPY_PLATFORM handles that.

@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+title: Variant Calling Benchmarking Across Sequencing Depths
+message: If you use this pipeline or its results, please cite it as below.
+type: software
+authors:
+  - family-names: Abdelmoghni
+    given-names: Hossam Hatem
+    affiliation: Nile University
+abstract: >-
+  A reproducible GATK Best Practices pipeline that quantifies how sequencing
+  depth affects germline variant calling accuracy. The GIAB HG002 whole-exome
+  library is downsampled to 2x, 10x, 40x and 60x on chromosome 22, called with
+  HaplotypeCaller, and benchmarked against the GIAB v4.2.1 truth set with hap.py.
+keywords:
+  - bioinformatics
+  - variant-calling
+  - benchmarking
+  - GATK
+  - hap.py
+  - genome-in-a-bottle
+  - next-generation-sequencing
+license: MIT
+date-released: 2025-12-01
+references:
+  - type: article
+    title: >-
+      Best practices for benchmarking germline small-variant calls in human
+      genomes
+    authors:
+      - family-names: Krusche
+        given-names: Peter
+    journal: Nature Biotechnology
+    volume: 37
+    start: 555
+    end: 560
+    year: 2019
+    doi: 10.1038/s41587-019-0054-x
