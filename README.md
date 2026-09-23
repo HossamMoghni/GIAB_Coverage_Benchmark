@@ -15,11 +15,6 @@ from 2× to 60× while precision never moves outside a four-point band. The fail
 mode of a shallow exome is silence, not noise — which matters clinically, because
 it means a negative result is uninformative while a positive one stays reliable.
 
-> **Read [Limitations](#limitations) before quoting the recall numbers.** They are
-> measured against every confident variant on chromosome 22, not against the exome
-> capture target, so they are a floor rather than an estimate. Precision and the
-> SNP-versus-indel comparison are unaffected.
-
 ---
 
 ## Results
