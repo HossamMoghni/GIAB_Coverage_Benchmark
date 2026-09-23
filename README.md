@@ -269,7 +269,7 @@ everything from the original sources.
 
 ## Author
 
-**Hossam Hatem Abdelmoghni** — CIT675 Advanced NGS, Nile University, Fall 2025.
+**Hossam Hatem Abdelmoghni**
 
 Code is MIT-licensed (see [`LICENSE`](LICENSE)). The GIAB data and the GRCh38
 reference carry their own terms from their respective sources.
