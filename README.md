@@ -15,10 +15,10 @@ from 2× to 60× while precision never moves outside a four-point band. The fail
 mode of a shallow exome is silence, not noise — which matters clinically, because
 it means a negative result is uninformative while a positive one stays reliable.
 
-> **Read [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) before quoting the recall
-> numbers.** They are measured against every confident variant on chromosome 22,
-> not against the exome capture target, so they are a floor rather than an
-> estimate. Precision and the SNP-versus-indel comparison are unaffected.
+> **Read [Limitations](#limitations) before quoting the recall numbers.** They are
+> measured against every confident variant on chromosome 22, not against the exome
+> capture target, so they are a floor rather than an estimate. Precision and the
+> SNP-versus-indel comparison are unaffected.
 
 ---
 
@@ -74,10 +74,11 @@ regions of chr22.
 | F1, SNP versus indel | `results/figures/f1_snp_vs_indel.png` |
 | Precision–recall trade-off | `results/figures/precision_recall.png` |
 | Detection efficiency per 1× | `results/figures/coverage_efficiency.png` |
+| Call-set composition (TP + FP) | `results/figures/variant_counts_stacked.png` |
 | Metric heatmap | `results/figures/performance_heatmap.png` |
 | Composite dashboard | `results/figures/dashboard.png` |
 
-Every one of these is regenerated from the committed CSVs by
+All eight are regenerated from the committed CSVs by
 `analysis/plot_benchmarks.py` — none are hand-drawn. The only hand-made image in
 the repository is the pipeline schematic, `docs/pipeline_workflow.png`.
 
@@ -210,15 +211,50 @@ correct series without hand arithmetic.
 │   └── figures/                   # generated PNGs
 └── docs/
     ├── report.pdf                 # the written report
-    ├── LIMITATIONS.md             # what is wrong with the analysis, and why
-    ├── assignment_brief.docx      # original task specification
+    ├── project_brief.docx         # original task specification
     ├── pipeline_workflow.png      # pipeline schematic
     └── original_submission/       # the submitted script, unmodified
 ```
 
 `docs/original_submission/` is kept verbatim as the academic record. The scripts
 in `scripts/` are a restructured and corrected version of it; the behavioural
-differences are listed in `docs/LIMITATIONS.md`.
+differences are described under [Limitations](#limitations).
+
+---
+
+## Limitations
+
+**Recall is measured against the whole chromosome, not the capture target.**
+`hap.py` was run with the GIAB high-confidence BED but no `--target-regions`, so
+the denominator is every confident variant on chr22 — 41,061 SNPs across 30.8 Mb.
+The input is a SureSelect v5 exome capture, which targets on the order of 1–2 Mb
+of that. Variants in the untargeted remainder are unreachable at any depth, and
+every one was counted as a false negative.
+
+So the reported 25.13% SNP recall at 60× is not "the pipeline found a quarter of
+the variants"; it is "the pipeline found a quarter of the variants on a
+chromosome whose great majority was never sequenced." Two things in the results
+confirm this is a denominator problem rather than a calling problem: precision
+stays flat at 69.6–72.9% across a 30-fold change in depth, and the recall curve
+is still climbing steeply at the deepest point with no sign of saturation.
+
+`scripts/07_rerun_ontarget.sh` re-runs the comparison with `-T <capture BED>`,
+which restricts the metrics to regions the assay can actually reach. **Precision,
+and the SNP-versus-indel comparison, are unaffected by this issue** — precision's
+denominator is the call set, not the truth set.
+
+**BQSR originally used the benchmark truth set as its known-sites resource.** The
+same VCF the pipeline is scored against was passed to `BaseRecalibrator`, which
+makes the recalibration circular. `scripts/04_bqsr.sh` now defaults to dbSNP138 +
+Mills; set `BQSR_ALLOW_TRUTH_AS_KNOWN_SITES=1` to reproduce the original.
+
+**Other caveats.** The 60× point is the un-subsampled extraction rather than a
+controlled level, so it cannot be reproduced by changing a parameter. Each depth
+was subsampled once with one seed, so no metric carries a confidence interval. No
+hard filtering or VQSR was applied, so `ALL` and `PASS` rows are identical and the
+~70% precision is raw-call precision. Genotype concordance is present in
+`results/happy/extended/` but is not surfaced in the figures — at 40×, 2,213 of
+3,235 SNP false positives are `FP.gt`, meaning right position and wrong genotype.
 
 ---
 
